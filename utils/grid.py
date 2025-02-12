@@ -7,6 +7,7 @@ logger = logging.getLogger(__file__)
 
 class Grid:
     def __init__(self, height=200, width=200):
+        self.height, self.width = height, width
         self.data = [[[] for _ in range(width)] for _ in range(height)]
 
     def __getitem__(self, index):

@@ -1,6 +1,5 @@
 import curses
 import logging
-from enum import Enum
 from time import sleep
 
 import config
@@ -25,29 +24,35 @@ def update(stdscr):
     keyboard_listener.start()
 
     scene_manager = SceneManager()
+    scene_manager.screen = stdscr
     scene_manager.player_cls, scene_manager.camera_cls, scene_manager.wall_cls, scene_manager.floor_cls = Player, Camera, Wall, Floor
     scene_manager.spawn_explore_scene()
     
+    stdscr.clear()
+
     for object in scene_manager.game_objects:
         object.start()
 
     while True:
-        stdscr.clear()
-
         for object in scene_manager.game_objects:
             object.update()
 
         CollisionManager.process_collisions(scene_manager)
 
-        line_num = 0
-        for i in range(scene_manager.camera.c_tl_x, scene_manager.camera.c_br_x):
-            line = []
-            for j in range(scene_manager.camera.c_tl_y, scene_manager.camera.c_br_y):
-                object = scene_manager.grid.get_object_to_display(i, j)
-                line.append(object.char)
+        if scene_manager.camera.has_border:
+            stdscr.addstr(0, 0, " * " * (scene_manager.camera.width + 2))
+            line_num = 1
+            for i in range(scene_manager.camera.c_tl_x, scene_manager.camera.c_br_x):
+                line = [" * "]
+                for j in range(scene_manager.camera.c_tl_y, scene_manager.camera.c_br_y):
+                    object = scene_manager.grid.get_object_to_display(i, j)
+                    line.append(object.char)
+                line.append(" * ")
 
-            stdscr.addstr(line_num, 0, "".join(line))
-            line_num += 1
+                stdscr.addstr(line_num, 0, "".join(line))
+                line_num += 1
+
+            stdscr.addstr(line_num, 0, " * " * (scene_manager.camera.width + 2))
         stdscr.refresh()
 
         sleep(config.FRAME_DELTA_TIME)

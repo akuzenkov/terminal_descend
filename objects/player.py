@@ -70,12 +70,12 @@ class Player(GameObject):
         self.delta_pos -= self.delta_pos.floor    # Extracting float part of offset
 
         # Updating position only if coords is range of GRID_SIZE
-        if 0 <= new_pos.x < config.GRID_SIZE:
+        if 0 <= new_pos.x < self.scene_manager.grid.height:
             new_prev_pos_x, new_pos_x = self.pos.x, new_pos.x
         else:
             new_prev_pos_x, new_pos_x = self.prev_pos.x, self.pos.x
 
-        if 0 <= new_pos.y < config.GRID_SIZE:
+        if 0 <= new_pos.y < self.scene_manager.grid.width:
             new_prev_pos_y, new_pos_y = self.pos.y, new_pos.y
         else:
             new_prev_pos_y, new_pos_y = self.prev_pos.y, self.pos.y

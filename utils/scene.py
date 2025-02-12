@@ -93,7 +93,9 @@ class SceneMeta(type):
 
 
 class SceneManager(metaclass=SceneMeta):
-    def __init__(self):        
+    def __init__(self):
+        self.screen = None
+
         self.explore_grid = None
         self.explore_player = None
         self.explore_camera = None
@@ -140,6 +142,8 @@ class SceneManager(metaclass=SceneMeta):
         self.fight_camera.linked_object = self.fight_player
 
     def switch(self):
+        self.screen.clear()
+
         if self.scene_type is SceneType.EXPLORE:
             self.game_objects.switch()
             self.scene_type = SceneType.FIGHT
