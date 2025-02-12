@@ -51,11 +51,14 @@ class GameObjectManager:
                 else:
                     value = None
 
-    def send(self, value):
+    def send(self, object):
+        if not object.is_updatable:
+            return
+        
         if self.scene_type is SceneType.EXPLORE:
-            self.explore_game_objects.send(value)
+            self.explore_game_objects.send(object)
         else:
-            self.fight_game_objects.send(value)
+            self.fight_game_objects.send(object)
 
     def __iter__(self):
         return self

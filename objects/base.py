@@ -10,14 +10,14 @@ logger = logging.getLogger(__file__)
 
 class GameObject:
     def __init__(self, pos):
-        self.scene_manager = SceneManager()
-
+        self._pos = pos
         self.prev_pos = pos
         self.delta_pos = Vector2D(0, 0)
 
         self.screen_weight = float("inf")
 
-        self._pos = pos
+        self.is_updatable = True
+        self.scene_manager = SceneManager()
 
     @property
     def pos(self):

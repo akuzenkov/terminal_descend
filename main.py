@@ -28,7 +28,6 @@ def update(stdscr):
     scene_manager.player_cls, scene_manager.camera_cls, scene_manager.wall_cls, scene_manager.floor_cls = Player, Camera, Wall, Floor
     scene_manager.spawn_explore_scene()
     
-    _ = []
     for object in scene_manager.game_objects:
         object.start()
 
