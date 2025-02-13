@@ -15,6 +15,7 @@ class GameObject:
         self.delta_pos = Vector2D(0, 0)
 
         self.screen_weight = float("inf")
+        self.char = None
 
         self.is_updatable = True
         self.scene_manager = SceneManager()
@@ -51,6 +52,9 @@ class GameObject:
         pass
         
     def update(self):
+        pass
+
+    def destroy(self):
         pass
 
     def on_collision(self, other):

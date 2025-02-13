@@ -5,6 +5,7 @@ from time import sleep
 import config
 from input.keyboard import Listener, on_press, on_release
 
+from objects.projectiles import ProjectileManager
 from objects.player import Player
 from objects.environment import Wall, Floor
 from objects.misc import Camera
@@ -26,6 +27,7 @@ def update(stdscr):
     scene_manager = SceneManager()
     scene_manager.screen = stdscr
     scene_manager.player_cls, scene_manager.camera_cls, scene_manager.wall_cls, scene_manager.floor_cls = Player, Camera, Wall, Floor
+    scene_manager.projectile_manager_cls = ProjectileManager
     scene_manager.spawn_explore_scene()
     
     stdscr.clear()

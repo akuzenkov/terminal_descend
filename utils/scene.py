@@ -103,11 +103,13 @@ class SceneManager(metaclass=SceneMeta):
         self.fight_grid = None
         self.fight_player = None
         self.fight_camera = None
+        self.projectile_manager = None
 
         self.game_objects = GameObjectManager()
         self.scene_type = SceneType.EXPLORE
 
         self.player_cls, self.camera_cls, self.wall_cls, self.floor_cls = None, None, None, None 
+        self.projectile_manager_cls = None
 
     def spawn_explore_scene(self):
         self.explore_grid = Grid(height=config.GRID_SIZE, width=config.GRID_SIZE)
@@ -130,6 +132,8 @@ class SceneManager(metaclass=SceneMeta):
         self.fight_grid = Grid(height=config.FIGHT_GRID_SIZE, width=config.FIGHT_GRID_SIZE)
         level_gen = LevelGenerator(self.fight_grid, self.wall_cls, self.floor_cls)
         level_gen.generate_empty()
+
+        self.projectile_manager = self.projectile_manager_cls(Vector2D(0, 0))
 
         while True:
             i, j = random.randint(0, config.FIGHT_GRID_SIZE - 1), random.randint(0, config.FIGHT_GRID_SIZE - 1)
