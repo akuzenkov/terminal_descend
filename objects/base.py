@@ -1,4 +1,5 @@
 import logging
+from time import time
 
 from utils.primitives import Vector2D
 from utils.collisions import Collider
@@ -17,7 +18,10 @@ class GameObject:
         self.screen_weight = float("inf")
         self.char = None
 
+        self.created_at = time()
         self.is_updatable = True
+        self.is_deleted = False
+        
         self.scene_manager = SceneManager()
 
     @property
@@ -55,7 +59,7 @@ class GameObject:
         pass
 
     def destroy(self):
-        pass
+        self.is_deleted = True
 
     def on_collision(self, other):
         pass

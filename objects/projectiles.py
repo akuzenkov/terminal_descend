@@ -17,7 +17,7 @@ class ProjectileManager(GameObject):
         self.screen_weight = 10_000_000
 
         self.health = 10
-        self.time_between_spawn = 3
+        self.time_between_spawn = 1
         self.time_passed = 0
 
         self.gen = self.spawn_projectile()
@@ -58,7 +58,7 @@ class Projectile(GameObject):
         self.char = char
         
         self.screen_weight = 1_000
-        self.speed = 2
+        self.speed = 4
 
     def update(self):
         # Because movement is tile-based and using int coordinats, 
@@ -73,12 +73,14 @@ class Projectile(GameObject):
         if 0 <= new_pos.x < self.scene_manager.grid.height:
             new_prev_pos_x, new_pos_x = self.pos.x, new_pos.x
         else:
-            new_prev_pos_x, new_pos_x = self.prev_pos.x, self.pos.x
+            self.destroy()
+            return
 
         if 0 <= new_pos.y < self.scene_manager.grid.width:
             new_prev_pos_y, new_pos_y = self.pos.y, new_pos.y
         else:
-            new_prev_pos_y, new_pos_y = self.prev_pos.y, self.pos.y
+            self.destroy()
+            return
 
         self.prev_pos = Vector2D(new_prev_pos_x, new_prev_pos_y)
         self.pos = Vector2D(new_pos_x, new_pos_y)

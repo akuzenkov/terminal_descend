@@ -16,7 +16,7 @@ class CollisionManager:
 
             i, j = object.pos
 
-            for _, grid_object in scene_manager.grid[i][j]:
+            for _, _, grid_object in scene_manager.grid[i][j]:
                 if object is grid_object:
                     continue
 

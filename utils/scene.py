@@ -69,7 +69,10 @@ class GameObjectManager:
         else:
             gen = self.fight_game_objects
 
-        object = next(gen)
+        while True:
+            object = next(gen)
+            if object is None or not object.is_deleted:
+                break
 
         if object is not None:
             self._yielded_objects.append(object)
@@ -118,7 +121,7 @@ class SceneManager(metaclass=SceneMeta):
 
         while True:
             i, j = random.randint(0, config.GRID_SIZE - 1), random.randint(0, config.GRID_SIZE - 1)
-            _, tile = self.explore_grid[i][j][0]
+            _, _, tile = self.explore_grid[i][j][0]
             if isinstance(tile, self.floor_cls):
                 self.explore_player = self.player_cls(Vector2D(i, j))
                 break
@@ -137,7 +140,7 @@ class SceneManager(metaclass=SceneMeta):
 
         while True:
             i, j = random.randint(0, config.FIGHT_GRID_SIZE - 1), random.randint(0, config.FIGHT_GRID_SIZE - 1)
-            _, tile = self.fight_grid[i][j][0]
+            _, _, tile = self.fight_grid[i][j][0]
             if isinstance(tile, self.floor_cls):
                 self.fight_player = self.player_cls(Vector2D(i, j))
                 break

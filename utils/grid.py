@@ -37,10 +37,10 @@ class Grid:
         return item in self.data
     
     def add_object(self, object):
-        if not hasattr(object, "pos"):
+        if not hasattr(object, "pos") or object.is_deleted:
             return
 
-        heapq.heappush(self.data[object.pos.x][object.pos.y], (object.screen_weight, object))
+        heapq.heappush(self.data[object.pos.x][object.pos.y], (object.screen_weight, object.created_at, object))
 
     def remove_object(self, object):
         temp = []
@@ -51,17 +51,20 @@ class Grid:
         i, j = object.pos
         
         while self.data[i][j]:
-            _, cur_object = heapq.heappop(self.data[i][j])
+            _, _, cur_object = heapq.heappop(self.data[i][j])
             if cur_object is object:
                 break
             else:
                 temp.append(cur_object)
         
         for obj in temp:
-            heapq.heappush(self.data[i][j], (obj.screen_weight, obj))
+            heapq.heappush(self.data[i][j], (obj.screen_weight, obj.created_at, obj))
 
     def get_object_to_display(self, i, j):
-        if self.data[i][j]:
-            _, object = self.data[i][j][0]
-            return object
+        while self.data[i][j]:
+            _, _, object = self.data[i][j][0]
+            if not object.is_deleted:
+                return object
+            
+            heapq.heappop(self.data[i][j])
         return None
