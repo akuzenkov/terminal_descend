@@ -1,12 +1,15 @@
 import heapq
 import logging
 
+from utils.primitives import Vector2D
+
 
 logger = logging.getLogger(__file__)
 
 
 class Grid:
-    def __init__(self, height=200, width=200):
+    def __init__(self, height=200, width=200, terminal_pos=Vector2D(0, 0)):
+        self.terminal_pos = terminal_pos
         self.height, self.width = height, width
         self.data = [[[] for _ in range(width)] for _ in range(height)]
 

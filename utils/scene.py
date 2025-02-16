@@ -132,7 +132,7 @@ class SceneManager(metaclass=SceneMeta):
     def spawn_fight_scene(self):
         self.fight_game_objects = []
 
-        self.fight_grid = Grid(height=config.FIGHT_GRID_SIZE, width=config.FIGHT_GRID_SIZE)
+        self.fight_grid = Grid(height=config.FIGHT_GRID_SIZE, width=config.FIGHT_GRID_SIZE, terminal_pos=Vector2D(30, 30))
         level_gen = LevelGenerator(self.fight_grid, self.wall_cls, self.floor_cls)
         level_gen.generate_empty()
 

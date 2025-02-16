@@ -20,7 +20,7 @@ class Player(GameObject):
         self.dir = Vector2D(0, 1)
 
         self.WALK_SPEED = 4
-        self.speed = 4
+        self.speed = self.WALK_SPEED
 
         # Dash settings
         self.DASH_SPEED = 10
@@ -51,6 +51,8 @@ class Player(GameObject):
         else:
             if key and key.char in directions:
                 self.dir = directions[key.char]
+            else:
+                self.dir = Vector2D(0, 0)
 
             if key and key.char == "j" and not self.is_dashing:
                 self.is_dashing = True
@@ -64,10 +66,10 @@ class Player(GameObject):
         # Because movement is tile-based and using int coordinats, 
         # to control speed of objects more precisely we need adjust decimal part of coords
         pos_offset = self.dir * self.speed * config.FRAME_DELTA_TIME    # Getting full position offset
-        new_delta_pos = pos_offset - pos_offset.floor    # Extracting float part of offset
-        self.delta_pos += new_delta_pos    # Increasing float part of offset between frames
+        new_delta_pos = pos_offset - pos_offset.floor                   # Extracting float part of offset
+        self.delta_pos += new_delta_pos                                 # Increasing float part of offset between frames
         new_pos = self.pos + pos_offset.floor + self.delta_pos.floor    # Getting new int position
-        self.delta_pos -= self.delta_pos.floor    # Extracting float part of offset
+        self.delta_pos -= self.delta_pos.floor                          # Extracting float part of offset
 
         # Updating position only if coords is range of GRID_SIZE
         if 0 <= new_pos.x < self.scene_manager.grid.height:

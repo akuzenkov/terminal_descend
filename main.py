@@ -42,8 +42,10 @@ def update(stdscr):
         CollisionManager.process_collisions(scene_manager)
 
         if scene_manager.camera.has_border:
-            stdscr.addstr(0, 0, " * " * (scene_manager.camera.width + 2))
-            line_num = 1
+            offset_x, offset_y = scene_manager.grid.terminal_pos
+
+            stdscr.addstr(offset_x, offset_y, " * " * (scene_manager.camera.width + 2))
+            line_num = 1 + offset_x
             for i in range(scene_manager.camera.c_tl_x, scene_manager.camera.c_br_x):
                 line = [" * "]
                 for j in range(scene_manager.camera.c_tl_y, scene_manager.camera.c_br_y):
@@ -51,10 +53,10 @@ def update(stdscr):
                     line.append(object.char)
                 line.append(" * ")
 
-                stdscr.addstr(line_num, 0, "".join(line))
+                stdscr.addstr(line_num, offset_y, "".join(line))
                 line_num += 1
 
-            stdscr.addstr(line_num, 0, " * " * (scene_manager.camera.width + 2))
+            stdscr.addstr(line_num, offset_y, " * " * (scene_manager.camera.width + 2))
         stdscr.refresh()
 
         sleep(config.FRAME_DELTA_TIME)

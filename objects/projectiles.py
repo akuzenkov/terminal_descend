@@ -20,7 +20,7 @@ class ProjectileManager(GameObject):
         self.time_between_spawn = 1
         self.time_passed = 0
 
-        self.gen = self.spawn_projectile()
+        self.gen = self.zig_zag_pattern()
 
     def update(self):
         if self.time_passed < self.time_between_spawn:
@@ -49,6 +49,28 @@ class ProjectileManager(GameObject):
 
                 yield
 
+    def zig_zag_pattern(self):
+        char, dir =  " \u2B07 ", Vector2D(1, 0)   # Down
+        skip_cells, delta = [0, 1] , -1
+        yield
+
+        while True:
+            for j in range(self.scene_manager.grid.width):
+                if j in skip_cells:
+                    continue
+                
+                Projectile(Vector2D(0, j), dir, char)
+            
+            if skip_cells[0] == 0 or skip_cells[-1] == self.scene_manager.grid.width - 1:
+                delta *= -1
+
+            skip_cells[0] += delta
+            skip_cells[-1] += delta
+
+            self.time_passed = 0
+            yield
+
+            
 
 class Projectile(GameObject):
     def __init__(self, pos, dir, char):
@@ -58,16 +80,16 @@ class Projectile(GameObject):
         self.char = char
         
         self.screen_weight = 1_000
-        self.speed = 4
+        self.speed = 2
 
     def update(self):
         # Because movement is tile-based and using int coordinats, 
         # to control speed of objects more precisely we need adjust decimal part of coords
         pos_offset = self.dir * self.speed * config.FRAME_DELTA_TIME    # Getting full position offset
-        new_delta_pos = pos_offset - pos_offset.floor    # Extracting float part of offset
-        self.delta_pos += new_delta_pos    # Increasing float part of offset between frames
+        new_delta_pos = pos_offset - pos_offset.floor                   # Extracting float part of offset
+        self.delta_pos += new_delta_pos                                 # Increasing float part of offset between frames
         new_pos = self.pos + pos_offset.floor + self.delta_pos.floor    # Getting new int position
-        self.delta_pos -= self.delta_pos.floor    # Extracting float part of offset
+        self.delta_pos -= self.delta_pos.floor                          # Extracting float part of offset
 
         # Updating position only if coords is range of GRID_SIZE
         if 0 <= new_pos.x < self.scene_manager.grid.height:
@@ -84,3 +106,5 @@ class Projectile(GameObject):
 
         self.prev_pos = Vector2D(new_prev_pos_x, new_prev_pos_y)
         self.pos = Vector2D(new_pos_x, new_pos_y)
+
+
