@@ -2,7 +2,7 @@ import heapq
 import logging
 
 from utils.primitives import Vector2D
-
+from utils.scene import SceneManager
 
 logger = logging.getLogger(__file__)
 
@@ -12,6 +12,15 @@ class Grid:
         self.terminal_pos = terminal_pos
         self.height, self.width = height, width
         self.data = [[[] for _ in range(width)] for _ in range(height)]
+        self.camera = None
+
+        self.scene_manager = SceneManager()
+    
+    def __setattr__(self, name, value):
+        if isinstance(value, SceneManager):
+            value.grids.send(self)
+        
+        super().__setattr__(name, value)
 
     def __getitem__(self, index):
         return self.data[index]
@@ -71,3 +80,7 @@ class Grid:
             
             heapq.heappop(self.data[i][j])
         return None
+    
+    @classmethod
+    def create_from_pattern(cls, object_cls, pattern):
+        pass

@@ -11,66 +11,20 @@ logger = logging.getLogger(__file__)
 
 
 class ProjectileManager(GameObject):
-    def __init__(self, pos):
+    def __init__(self, pos, enemy):
         super().__init__(pos)
 
         self.screen_weight = 10_000_000
 
-        self.health = 10
-        self.time_between_spawn = 1
-        self.time_passed = 0
-
-        self.gen = self.zig_zag_pattern()
+        self.enemy = enemy
+        self.gen = enemy.fight_pattern()
 
     def update(self):
-        if self.time_passed < self.time_between_spawn:
-            self.time_passed += config.FRAME_DELTA_TIME
+        if self.enemy.time_passed < self.enemy.time_between_spawn:
+            self.enemy.time_passed += config.FRAME_DELTA_TIME
         else:
             next(self.gen)
 
-    def spawn_projectile(self):
-        preset = [
-            (" \u2B06 ", Vector2D(-1, 0), (self.scene_manager.grid.height - 1, None)),    # Up
-            (" \u2B07 ", Vector2D(1, 0), (0, None)),                                      # Down
-            (" \u2B05 ", Vector2D(0, -1), (None, self.scene_manager.grid.width - 1)),     # Left
-            (" \u27A1 ", Vector2D(0, 1), (None, 0))                                       # Right
-            ]
-        
-        while self.health:
-            for char, dir, pos in preset:
-                i, j = pos
-                if i is None:
-                    i = random.randint(0, self.scene_manager.grid.height - 1)
-                else:
-                    j = random.randint(0, self.scene_manager.grid.width - 1)
-
-                Projectile(Vector2D(i, j), dir, char)
-                self.time_passed = 0
-
-                yield
-
-    def zig_zag_pattern(self):
-        char, dir =  " \u2B07 ", Vector2D(1, 0)   # Down
-        skip_cells, delta = [0, 1] , -1
-        yield
-
-        while True:
-            for j in range(self.scene_manager.grid.width):
-                if j in skip_cells:
-                    continue
-                
-                Projectile(Vector2D(0, j), dir, char)
-            
-            if skip_cells[0] == 0 or skip_cells[-1] == self.scene_manager.grid.width - 1:
-                delta *= -1
-
-            skip_cells[0] += delta
-            skip_cells[-1] += delta
-
-            self.time_passed = 0
-            yield
-
-            
 
 class Projectile(GameObject):
     def __init__(self, pos, dir, char):

@@ -1,11 +1,12 @@
 import logging
-
 from time import time
 
 import config
 from input import keyboard
 from objects.base import GameObject
 from objects.environment import Wall
+from objects.npc import Enemy
+
 from utils.primitives import Vector2D
 from utils.collisions import Collider
 
@@ -59,10 +60,6 @@ class Player(GameObject):
                 self.speed = self.DASH_SPEED
                 self.dash_start_time = time()
 
-            if key and key.char == "f" and not self.is_dashing:
-                self.scene_manager.switch()
-                return
-
         # Because movement is tile-based and using int coordinats, 
         # to control speed of objects more precisely we need adjust decimal part of coords
         pos_offset = self.dir * self.speed * config.FRAME_DELTA_TIME    # Getting full position offset
@@ -88,3 +85,5 @@ class Player(GameObject):
     def on_collision(self, other):
         if isinstance(other, Wall):
             self.pos = self.prev_pos
+        elif isinstance(other, Enemy):
+            self.scene_manager.switch(other)
