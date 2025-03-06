@@ -52,7 +52,7 @@ def update(stdscr):
                 line = [" * "]
                 for j in range(grid.camera.c_tl_y, grid.camera.c_br_y):
                     object = grid.get_object_to_display(i, j)
-                    line.append(object.char)
+                    line.append(object.char if object else "   ")
                 line.append(" * ")
 
                 stdscr.addstr(line_num, offset_y, "".join(line))

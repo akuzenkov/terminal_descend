@@ -183,12 +183,12 @@ class SceneManager(metaclass=SceneMeta):
             i, j = random.randint(0, config.GRID_SIZE - 1), random.randint(0, config.GRID_SIZE - 1)
             _, _, tile = self.explore_grid[i][j][0]
             if isinstance(tile, self.floor_cls):
-                self.explore_player = self.player_cls(Vector2D(i, j))
+                self.explore_player = self.player_cls(Vector2D(i, j), self.explore_grid)
                 break
         
-        self.enemy_cls(Vector2D(i, j + 1))
+        self.enemy_cls(Vector2D(i, j + 1), self.explore_grid)
 
-        self.explore_camera = self.camera_cls(Vector2D(0, 0), config.CAMERA_HEIGHT, config.CAMERA_WIDTH, config.FOCUS_DISTANCE)
+        self.explore_camera = self.camera_cls(Vector2D(0, 0), self.explore_grid, config.CAMERA_HEIGHT, config.CAMERA_WIDTH, config.FOCUS_DISTANCE)
         self.explore_camera.linked_object = self.explore_player
         self.explore_grid.camera = self.explore_camera
 
@@ -197,7 +197,14 @@ class SceneManager(metaclass=SceneMeta):
         level_gen = LevelGenerator(self.fight_grid, self.wall_cls, self.floor_cls)
         level_gen.generate_empty()
 
-        self.projectile_manager = self.projectile_manager_cls(Vector2D(0, 0), enemy)
+        self.projectile_manager = self.projectile_manager_cls(Vector2D(0, 0), enemy, self.fight_grid)
+
+        self.health_grid = self.grid_cls(height=2, width=40, terminal_pos=Vector2D(10, 0))
+        self.health_grid.camera = self.camera_cls(Vector2D(0, 0), self.health_grid, height=2, width=40, focus=0)
+        level_generator = LevelGenerator(self.health_grid, self.wall_cls, self.floor_cls)
+        level_generator.generate_one_row()
+        fight_enemy = type(enemy)(Vector2D(0, 0), self.health_grid)
+
 
         while True:
             i, j = random.randint(0, config.FIGHT_GRID_SIZE - 1), random.randint(0, config.FIGHT_GRID_SIZE - 1)
@@ -206,7 +213,7 @@ class SceneManager(metaclass=SceneMeta):
                 self.fight_player = self.player_cls(Vector2D(i, j))
                 break
 
-        self.fight_camera = self.camera_cls(Vector2D(0, 0), config.FIGHT_CAMERA_HEIGHT, config.FIGHT_CAMERA_WIDTH, config.FIGHT_FOCUS_DISTANCE)
+        self.fight_camera = self.camera_cls(Vector2D(0, 0), self.fight_grid, config.FIGHT_CAMERA_HEIGHT, config.FIGHT_CAMERA_WIDTH, config.FIGHT_FOCUS_DISTANCE)
         self.fight_camera.linked_object = self.fight_player
         self.fight_grid.camera = self.fight_camera
 

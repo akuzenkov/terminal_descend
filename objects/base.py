@@ -10,7 +10,7 @@ logger = logging.getLogger(__file__)
 
 
 class GameObject:
-    def __init__(self, pos):
+    def __init__(self, pos, grid=None):
         self._pos = pos
         self.prev_pos = pos
         self.delta_pos = Vector2D(0, 0)
@@ -23,6 +23,7 @@ class GameObject:
         self.is_deleted = False
         
         self.scene_manager = SceneManager()
+        self.grid = grid or self.scene_manager.grid
 
     @property
     def pos(self):
@@ -30,9 +31,9 @@ class GameObject:
     
     @pos.setter
     def pos(self, value):
-        self.scene_manager.grid.remove_object(self)
+        self.grid.remove_object(self)
         self._pos = value
-        self.scene_manager.grid.add_object(self)
+        self.grid.add_object(self)
 
     def __setattr__(self, name, value):
         if isinstance(value, SceneManager):

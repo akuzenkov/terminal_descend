@@ -15,8 +15,8 @@ logger = logging.getLogger(__file__)
 
 
 class Player(GameObject):
-    def __init__(self, pos):
-        super().__init__(pos)
+    def __init__(self, pos, grid=None):
+        super().__init__(pos, grid)
 
         self.dir = Vector2D(0, 1)
 
@@ -69,12 +69,12 @@ class Player(GameObject):
         self.delta_pos -= self.delta_pos.floor                          # Extracting float part of offset
 
         # Updating position only if coords is range of GRID_SIZE
-        if 0 <= new_pos.x < self.scene_manager.grid.height:
+        if 0 <= new_pos.x < self.grid.height:
             new_prev_pos_x, new_pos_x = self.pos.x, new_pos.x
         else:
             new_prev_pos_x, new_pos_x = self.prev_pos.x, self.pos.x
 
-        if 0 <= new_pos.y < self.scene_manager.grid.width:
+        if 0 <= new_pos.y < self.grid.width:
             new_prev_pos_y, new_pos_y = self.pos.y, new_pos.y
         else:
             new_prev_pos_y, new_pos_y = self.prev_pos.y, self.pos.y

@@ -11,13 +11,13 @@ logger = logging.getLogger(__file__)
 
 
 class ProjectileManager(GameObject):
-    def __init__(self, pos, enemy):
+    def __init__(self, pos, enemy, fight_grid):
         super().__init__(pos)
 
         self.screen_weight = 10_000_000
 
         self.enemy = enemy
-        self.gen = enemy.fight_pattern()
+        self.gen = enemy.fight_pattern(fight_grid)
 
     def update(self):
         if self.enemy.time_passed < self.enemy.time_between_spawn:
@@ -27,8 +27,8 @@ class ProjectileManager(GameObject):
 
 
 class Projectile(GameObject):
-    def __init__(self, pos, dir, char):
-        super().__init__(pos)
+    def __init__(self, pos, grid=None, dir=None, char=None):
+        super().__init__(pos, grid)
         
         self.dir = dir
         self.char = char
@@ -46,13 +46,13 @@ class Projectile(GameObject):
         self.delta_pos -= self.delta_pos.floor                          # Extracting float part of offset
 
         # Updating position only if coords is range of GRID_SIZE
-        if 0 <= new_pos.x < self.scene_manager.grid.height:
+        if 0 <= new_pos.x < self.grid.height:
             new_prev_pos_x, new_pos_x = self.pos.x, new_pos.x
         else:
             self.destroy()
             return
 
-        if 0 <= new_pos.y < self.scene_manager.grid.width:
+        if 0 <= new_pos.y < self.grid.width:
             new_prev_pos_y, new_pos_y = self.pos.y, new_pos.y
         else:
             self.destroy()

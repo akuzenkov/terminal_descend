@@ -9,8 +9,8 @@ logger = logging.getLogger(__file__)
 
 
 class Camera(GameObject):
-    def __init__(self, pos, height, width, focus):
-        super().__init__(pos)
+    def __init__(self, pos, grid=None, height=0, width=0, focus=0):
+        super().__init__(pos, grid)
 
         self.screen_weight = 1_000_000
         self.char = "   "
@@ -55,10 +55,10 @@ class Camera(GameObject):
             new_pos_y += self.linked_object.pos.y - self.f_br_y
 
         # Updating camera position only if coords is range of GRID_SIZE
-        if not (0 <= new_pos_x and new_pos_x + self.height - 1 < self.scene_manager.grid.height):
+        if not (0 <= new_pos_x and new_pos_x + self.height - 1 < self.grid.height):
             new_pos_x = self.pos.x
 
-        if not (0 <= new_pos_y and new_pos_y + self.width - 1 < self.scene_manager.grid.width):
+        if not (0 <= new_pos_y and new_pos_y + self.width - 1 < self.grid.width):
             new_pos_y = self.pos.y
 
         self.pos = Vector2D(new_pos_x, new_pos_y)
