@@ -10,20 +10,30 @@ logger = logging.getLogger(__file__)
 
 
 class GameObject:
+    is_updatable = True
+    is_deleted = False
+    screen_weight = float("inf")
+
+    def __new__(cls, *args, **kwargs):
+        inst = super().__new__(cls)
+
+        inst.is_updatable = cls.is_updatable
+        inst.is_deleted = cls.is_deleted
+        inst.screen_weight = cls.screen_weight
+        inst.created_at = time()
+
+        inst.scene_manager = SceneManager()
+
+        return inst
+
     def __init__(self, pos, grid=None):
-        self._pos = pos
+        self.grid = grid or self.scene_manager.grid
+
+        self.pos = pos
         self.prev_pos = pos
         self.delta_pos = Vector2D(0, 0)
 
-        self.screen_weight = float("inf")
         self.char = None
-
-        self.created_at = time()
-        self.is_updatable = True
-        self.is_deleted = False
-        
-        self.scene_manager = SceneManager()
-        self.grid = grid or self.scene_manager.grid
 
     @property
     def pos(self):
@@ -61,6 +71,8 @@ class GameObject:
 
     def destroy(self):
         self.is_deleted = True
+
+        self.grid.remove_object(self)
 
     def on_collision(self, other):
         pass

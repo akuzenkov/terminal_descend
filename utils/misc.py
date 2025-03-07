@@ -25,8 +25,7 @@ class LevelGenerator:
                     [self.wall_chance, 1 - self.wall_chance]
                     )[0]
                 
-                object = cls(Vector2D(i, j))
-                self.grid.add_object(object)
+                cls(Vector2D(i, j), self.grid)
                 
     def count_walls(self, i, j):
         wall_cnt = 0
@@ -51,13 +50,15 @@ class LevelGenerator:
                 object = self.grid.get_object_to_display(i, j)
 
                 if isinstance(object, self.floor_cls) and wall_cnt >= self.to_wall_treshold:
-                    self.grid.remove_object(object)
-                    self.grid.add_object(self.wall_cls(Vector2D(i, j), self.grid))
+                    # self.grid.remove_object(object)
+                    object.destroy()
+                    self.wall_cls(Vector2D(i, j), self.grid)
                 elif isinstance(object, self.wall_cls) and wall_cnt >= self.to_floor_treshold:
                     continue
                 else:
-                    self.grid.remove_object(object)
-                    self.grid.add_object(self.floor_cls(Vector2D(i, j), self.grid))
+                    # self.grid.remove_object(object)
+                    object.destroy()
+                    self.floor_cls(Vector2D(i, j), self.grid)
                 
     def generate(self):
         self.init_field()
@@ -67,8 +68,8 @@ class LevelGenerator:
     def generate_empty(self):
         for i in range(len(self.grid)):
             for j in range(len(self.grid[i])):
-                self.grid.add_object(self.floor_cls(Vector2D(i, j), self.grid))
+                self.floor_cls(Vector2D(i, j), self.grid)
 
     def generate_one_row(self):
         for j in range(len(self.grid[0])):
-            self.grid.add_object(self.wall_cls(Vector2D(0, j), self.grid))
+            self.wall_cls(Vector2D(0, j), self.grid)
