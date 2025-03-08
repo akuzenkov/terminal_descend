@@ -1,5 +1,6 @@
 import logging
 from time import time
+from enum import Enum
 
 import config
 from input import keyboard
@@ -12,6 +13,12 @@ from utils.collisions import Collider
 
 
 logger = logging.getLogger(__file__)
+
+
+class State(Enum):
+    IDLE = "idle"
+    WALKING = "walking"
+    DASHING = "dashing"
 
 
 class Player(GameObject):
@@ -28,6 +35,7 @@ class Player(GameObject):
         self.is_dashing = False
         self.dash_time = 0.3
         self.dash_start_time = 0
+        self.state = State.IDLE
 
         self.char = " @ "
         self.screen_weight = -999
@@ -54,6 +62,7 @@ class Player(GameObject):
                 self.dir = directions[key.char]
             else:
                 self.dir = Vector2D(0, 0)
+                self.state = State.IDLE
 
             if key and key.char == "j" and not self.is_dashing:
                 self.is_dashing = True
@@ -62,11 +71,15 @@ class Player(GameObject):
 
         # Because movement is tile-based and using int coordinats, 
         # to control speed of objects more precisely we need adjust decimal part of coords
-        pos_offset = self.dir * self.speed * config.FRAME_DELTA_TIME    # Getting full position offset
-        new_delta_pos = pos_offset - pos_offset.floor                   # Extracting float part of offset
-        self.delta_pos += new_delta_pos                                 # Increasing float part of offset between frames
-        new_pos = self.pos + pos_offset.floor + self.delta_pos.floor    # Getting new int position
-        self.delta_pos -= self.delta_pos.floor                          # Extracting float part of offset
+        if self.dir and self.state is State.IDLE:
+            self.state = State.WALKING
+            new_pos = self.pos + self.dir
+        else:
+            pos_offset = self.dir * self.speed * config.FRAME_DELTA_TIME    # Getting full position offset
+            new_delta_pos = pos_offset - pos_offset.floor                   # Extracting float part of offset
+            self.delta_pos += new_delta_pos                                 # Increasing float part of offset between frames
+            new_pos = self.pos + pos_offset.floor + self.delta_pos.floor    # Getting new int position
+            self.delta_pos -= self.delta_pos.floor                          # Extracting float part of offset
 
         # Updating position only if coords is range of GRID_SIZE
         if 0 <= new_pos.x < self.grid.height:

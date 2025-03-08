@@ -49,6 +49,10 @@ class Vector2D:
     def __hash__(self):
         return hash((self.x, self.y))
     
+    def __bool__(self):
+        if self.x == 0 and self.y == 0:
+            return False
+        return True
     
     def __repr__(self):
         return fr"Vector2D({self.x}, {self.y})"

@@ -50,13 +50,11 @@ class LevelGenerator:
                 object = self.grid.get_object_to_display(i, j)
 
                 if isinstance(object, self.floor_cls) and wall_cnt >= self.to_wall_treshold:
-                    # self.grid.remove_object(object)
                     object.destroy()
                     self.wall_cls(Vector2D(i, j), self.grid)
                 elif isinstance(object, self.wall_cls) and wall_cnt >= self.to_floor_treshold:
                     continue
                 else:
-                    # self.grid.remove_object(object)
                     object.destroy()
                     self.floor_cls(Vector2D(i, j), self.grid)
                 
